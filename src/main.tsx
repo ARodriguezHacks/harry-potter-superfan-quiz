@@ -9,12 +9,6 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    // children: [
-    //   {
-    //     path: "homepage",
-    //     element: <Homepage />,
-    //   },
-    // ],
   },
   {
     path: "/homepage",
