@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 export default function Homepage() {
-  const [test, setTest] = useState(null);
+  const [test, setTest] = useState(false);
 
   useEffect(() => {
     async function getHomepage() {
@@ -9,8 +9,8 @@ export default function Homepage() {
       console.log(data);
       const res = await data.json();
       console.log(res);
-      if (test == null) {
-        setTest(res);
+      if (test == false) {
+        setTest(!test);
       }
     }
     getHomepage();
