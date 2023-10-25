@@ -1,42 +1,38 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
-// import Homepage from "./pages/homepage";
 import { Link } from "react-router-dom";
+import Login from "./components/login";
+import SignUp from "./components/signup";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [login, setLogin] = useState(true);
+
+  const changeForm = (): undefined => {
+    setLogin(!login);
+  };
 
   return (
     <>
       <nav>
         <ul>
           <li>
-            <Link to="/homepage">Homepage</Link>
+            <Link
+              to="/homepage"
+              className="bg-violet-500 hover:bg-violet-600 rounded-full p-2"
+            >
+              Homepage
+            </Link>
           </li>
         </ul>
       </nav>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>Harry Potter Superfan Quiz</h1>
+      <main className="grid grid-cols-12 w-full">
+        {login ? (
+          <Login changeView={changeForm} login />
+        ) : (
+          <SignUp changeView={changeForm} />
+        )}
+      </main>
     </>
   );
 }

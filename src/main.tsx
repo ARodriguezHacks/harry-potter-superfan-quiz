@@ -4,21 +4,20 @@ import App from "./App.tsx";
 import Homepage from "./pages/homepage.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
+import QuizLevel from "./pages/quizLevel.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    // children: [
-    //   {
-    //     path: "homepage",
-    //     element: <Homepage />,
-    //   },
-    // ],
   },
   {
     path: "/homepage",
     element: <Homepage />,
+  },
+  {
+    path: "/quizLevel",
+    element: <QuizLevel />,
   },
 ]);
 
