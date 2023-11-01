@@ -1,7 +1,9 @@
 import { useState, ChangeEvent, FormEvent } from "react";
+// import bcrypt from "bcrypt";
+// import argon2 from "argon2";
 import "../App.css";
 
-const userValues = {
+const defaultValues = {
   email: "",
   password: "",
 };
@@ -12,7 +14,7 @@ type LoginProps = {
 };
 
 export default function Login(props: LoginProps) {
-  const [values, setValues] = useState(userValues);
+  const [values, setValues] = useState(defaultValues);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -20,15 +22,40 @@ export default function Login(props: LoginProps) {
       ...values,
       [name]: value,
     });
+    console.log(values);
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setValues({
-      email: "",
-      password: "",
+    // hash the password before sending to response
+    // bcrypt.hash(values.password, 8, function (err, hash) {
+    //   console.log(hash);
+    // });
+    // try {
+    //   const hash = await argon2.hash("password");
+    //   console.log(hash);
+    // } catch (err) {
+    //   console.log(err);
+    // }
+    const response = await fetch("http://127.0.0.1:5000/login", {
+      method: "POST",
+      mode: "cors",
+      body: JSON.stringify(values),
     });
+
+    const output = await response.json();
+    console.log(output);
+    return output;
+    //   bcrypt.hash(values.password, 8, function(err, hash) {
+    //     // Store hash in your password DB.
+    // });
+    // setValues({
+    //   email: "",
+    //   password: "",
+    // });
   };
+
+  // useEffect()
 
   return (
     <>
