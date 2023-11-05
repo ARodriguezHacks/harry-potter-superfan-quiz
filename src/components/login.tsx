@@ -32,7 +32,7 @@ export default function Login(props: LoginProps) {
     });
 
     const output = await response.json();
-    console.log(output);
+    // console.log(output);
     return output;
   };
 
