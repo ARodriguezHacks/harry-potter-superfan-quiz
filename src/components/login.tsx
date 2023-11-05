@@ -30,7 +30,7 @@ export default function Login(props: LoginProps) {
     // hash the password before sending to response
     // bcrypt.hash(values.password, 8, function (err, hash) {
     //   console.log(hash);
-    // });
+    // // });
     // try {
     //   const hash = await argon2.hash("password");
     //   console.log(hash);
