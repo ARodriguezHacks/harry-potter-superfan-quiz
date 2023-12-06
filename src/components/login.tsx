@@ -20,7 +20,7 @@ export default function Login(props: LoginProps) {
       ...values,
       [name]: value,
     });
-    console.log(values);
+    // console.log(values);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -32,6 +32,7 @@ export default function Login(props: LoginProps) {
     });
 
     const output = await response.json();
+    setValues(defaultValues)
     // console.log(output);
     return output;
   };

@@ -1,20 +1,24 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, FocusEvent } from "react";
 import "../App.css";
 
 const userValues = {
   email: "",
   password: "",
+  passwordVerify: "",
 };
 
 type SignUpProps = {
-  changeView: () => undefined;
+  readonly changeView: () => undefined;
 };
 
 export default function SignUp(props: SignUpProps) {
   const [values, setValues] = useState(userValues);
+  const [disabled, setDisabled] = useState(true)
+  const [errors, setErrors] = useState(false)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    console.log(name);
     setValues({
       ...values,
       [name]: value,
@@ -26,14 +30,36 @@ export default function SignUp(props: SignUpProps) {
     setValues({
       email: "",
       password: "",
+      passwordVerify: "",
     });
   };
+
+  const handlePasswordCheck = (e: FocusEvent<HTMLInputElement>) => {
+    // e.preventDefault();
+    console.log(e);
+    if (values.password !== values.passwordVerify) {
+      setErrors(true)
+      setDisabled(true)
+    }
+  };
+
+  const handleInputCheck = (e: FocusEvent<HTMLFormElement>) => {
+    console.log(e);
+
+    for (const value in values){
+      if (!value) {
+        setErrors(true)
+        setDisabled(true)
+      }
+    }
+  }
 
   return (
     <>
       <form
         className="grid col-start-4 col-end-10 bg-green-500 drop-shadow-lg text-xl text-left p-5 rounded-lg min-h-fit"
         onSubmit={handleSubmit}
+        onBlur={handleInputCheck}
       >
         <h2 className="text-4xl text-center">Create Account</h2>
         <fieldset className="pb-5">
@@ -46,8 +72,10 @@ export default function SignUp(props: SignUpProps) {
               placeholder="example@email.com"
               value={values.email}
               onChange={handleChange}
+              required
             />
           </label>
+          { errors ? <small>Email field is required</small>: null}
         </fieldset>
         <fieldset className="pb-5">
           <label>
@@ -67,11 +95,12 @@ export default function SignUp(props: SignUpProps) {
             <p>Verify Password</p>
             <input
               type="password"
-              name="password"
+              name="passwordVerify"
               className="w-full"
-              placeholder="Password"
-              value={values.password}
+              placeholder="Re-type Password"
+              value={values.passwordVerify}
               onChange={handleChange}
+              onBlur={handlePasswordCheck}
             />
           </label>
         </fieldset>
@@ -82,7 +111,7 @@ export default function SignUp(props: SignUpProps) {
       <div className="grid col-start-4 col-end-10 bg-pink-500 drop-shadow-lg text-xl text-left p-5 rounded-lg min-h-fit">
         <p>
           Already have an account? Click{" "}
-          <button onClick={props.changeView}>
+          <button onClick={props.changeView} disabled={disabled}>
             <u>here</u>
           </button>{" "}
           to login.
