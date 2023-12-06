@@ -1,7 +1,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import "../App.css";
 
-const userValues = {
+const defaultValues = {
   email: "",
   password: "",
 };
@@ -12,7 +12,7 @@ type LoginProps = {
 };
 
 export default function Login(props: LoginProps) {
-  const [values, setValues] = useState(userValues);
+  const [values, setValues] = useState(defaultValues);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -20,14 +20,20 @@ export default function Login(props: LoginProps) {
       ...values,
       [name]: value,
     });
+    console.log(values);
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setValues({
-      email: "",
-      password: "",
+    const response = await fetch("http://127.0.0.1:5000/login", {
+      method: "POST",
+      mode: "cors",
+      body: JSON.stringify(values),
     });
+
+    const output = await response.json();
+    // console.log(output);
+    return output;
   };
 
   return (
