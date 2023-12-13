@@ -1,7 +1,13 @@
 import { useState, ChangeEvent, FormEvent, FocusEvent } from "react";
 import "../App.css";
 
-const userValues = {
+type UserObject = {
+  email: string,
+  password: string,
+  passwordVerify: string
+}
+
+const userValues:UserObject = {
   email: "",
   password: "",
   passwordVerify: "",
@@ -45,9 +51,10 @@ export default function SignUp(props: SignUpProps) {
 
   const handleInputCheck = (e: FocusEvent<HTMLFormElement>) => {
     console.log(e);
-
-    for (const value in values){
-      if (!value) {
+    let value: keyof typeof values;  // Type is "one" | "two" | "three"
+    for (value in values){
+      // console.log(`${values[value]}`)
+      if (values[value] === "") {
         setErrors(true)
         setDisabled(true)
       }
@@ -104,14 +111,14 @@ export default function SignUp(props: SignUpProps) {
             />
           </label>
         </fieldset>
-        <button className="rounded-full bg-orange-500" type="submit">
+        <button className="rounded-full bg-orange-500" type="submit" disabled={disabled}>
           Submit
         </button>
       </form>
       <div className="grid col-start-4 col-end-10 bg-pink-500 drop-shadow-lg text-xl text-left p-5 rounded-lg min-h-fit">
         <p>
           Already have an account? Click{" "}
-          <button onClick={props.changeView} disabled={disabled}>
+          <button onClick={props.changeView}>
             <u>here</u>
           </button>{" "}
           to login.

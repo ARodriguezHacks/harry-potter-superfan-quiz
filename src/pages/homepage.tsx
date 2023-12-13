@@ -9,7 +9,7 @@ export default function Homepage() {
       console.log(data);
       const res = await data.json();
       console.log(res);
-      if (test == false) {
+      if (!test) {
         setTest(!test);
       }
     }
