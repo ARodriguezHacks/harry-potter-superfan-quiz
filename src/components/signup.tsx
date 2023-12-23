@@ -2,12 +2,12 @@ import { useState, ChangeEvent, FormEvent, FocusEvent } from "react";
 import "../App.css";
 
 type UserObject = {
-  email: string,
-  password: string,
-  passwordVerify: string
-}
+  email: string;
+  password: string;
+  passwordVerify: string;
+};
 
-const userValues:UserObject = {
+const userValues: UserObject = {
   email: "",
   password: "",
   passwordVerify: "",
@@ -19,8 +19,13 @@ type SignUpProps = {
 
 export default function SignUp(props: SignUpProps) {
   const [values, setValues] = useState(userValues);
-  const [disabled, setDisabled] = useState(true)
-  const [errors, setErrors] = useState(false)
+  const [disabled, setDisabled] = useState(true);
+  const [errors, setErrors] = useState({
+    email: false,
+    password: false,
+    passwordVerify: false,
+  });
+  const [regExCheck, setregExCheck] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -41,32 +46,38 @@ export default function SignUp(props: SignUpProps) {
   };
 
   const handlePasswordCheck = (e: FocusEvent<HTMLInputElement>) => {
-    // e.preventDefault();
-    console.log(e);
     if (values.password !== values.passwordVerify) {
-      setErrors(true)
-      setDisabled(true)
+      setErrors({ ...errors, [e.target.name]: true });
+      setDisabled(true);
     }
   };
 
-  const handleInputCheck = (e: FocusEvent<HTMLFormElement>) => {
+  const handleInputCheck = (e: FocusEvent<HTMLInputElement>) => {
     console.log(e);
-    let value: keyof typeof values;  // Type is "one" | "two" | "three"
-    for (value in values){
-      // console.log(`${values[value]}`)
-      if (values[value] === "") {
-        setErrors(true)
-        setDisabled(true)
+    if (e.target.value === "") {
+      setErrors({ ...errors, [e.target.name]: true });
+      setDisabled(true);
+    } else {
+      setErrors({ ...errors, [e.target.name]: false });
+    }
+
+    if (e.target.name === "password" && e.target.value !== "") {
+      let regExp = new RegExp(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/g
+      );
+      if (regExp.test(e.target.value)) {
+        setregExCheck(false);
+      } else {
+        setregExCheck(true);
       }
     }
-  }
+  };
 
   return (
     <>
       <form
         className="grid col-start-4 col-end-10 bg-green-500 drop-shadow-lg text-xl text-left p-5 rounded-lg min-h-fit"
         onSubmit={handleSubmit}
-        onBlur={handleInputCheck}
       >
         <h2 className="text-4xl text-center">Create Account</h2>
         <fieldset className="pb-5">
@@ -79,10 +90,11 @@ export default function SignUp(props: SignUpProps) {
               placeholder="example@email.com"
               value={values.email}
               onChange={handleChange}
+              onBlur={handleInputCheck}
               required
             />
           </label>
-          { errors ? <small>Email field is required</small>: null}
+          {errors.email ? <small>Email field is required</small> : null}
         </fieldset>
         <fieldset className="pb-5">
           <label>
@@ -90,12 +102,17 @@ export default function SignUp(props: SignUpProps) {
             <input
               type="password"
               name="password"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
               className="w-full"
               placeholder="Password"
               value={values.password}
               onChange={handleChange}
+              onBlur={handleInputCheck}
+              required
             />
           </label>
+          {errors.password ? <small>Password field is required</small> : null}
+          {regExCheck ? <small>Password needs fixing.</small> : null}
         </fieldset>
         <fieldset className="pb-5">
           <label>
@@ -103,15 +120,22 @@ export default function SignUp(props: SignUpProps) {
             <input
               type="password"
               name="passwordVerify"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
               className="w-full"
               placeholder="Re-type Password"
               value={values.passwordVerify}
               onChange={handleChange}
               onBlur={handlePasswordCheck}
+              required
             />
           </label>
+          {/* { errors ? <small>Email field is required</small>: null} */}
         </fieldset>
-        <button className="rounded-full bg-orange-500" type="submit" disabled={disabled}>
+        <button
+          className="rounded-full bg-orange-500"
+          type="submit"
+          disabled={disabled}
+        >
           Submit
         </button>
       </form>

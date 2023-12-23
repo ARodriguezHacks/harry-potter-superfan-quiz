@@ -54,6 +54,7 @@ export default function Login(props: LoginProps) {
               placeholder="example@email.com"
               value={values.email}
               onChange={handleChange}
+              required
             />
           </label>
         </fieldset>
@@ -67,6 +68,7 @@ export default function Login(props: LoginProps) {
               placeholder="Password"
               value={values.password}
               onChange={handleChange}
+              required
             />
           </label>
         </fieldset>
