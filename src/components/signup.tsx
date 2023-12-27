@@ -19,8 +19,8 @@ type SignUpProps = {
 
 export default function SignUp(props: SignUpProps) {
   const [values, setValues] = useState(initialValues);
-  const [disabled, setDisabled] = useState(true);
-  const [formatErrors, setFormatErrors] = useState(false);
+  // const [disabled, setDisabled] = useState(true);
+  // const [formatErrors, setFormatErrors] = useState(false);
   const [errors, setErrors] = useState({
     email: false,
     password: false,
@@ -29,7 +29,6 @@ export default function SignUp(props: SignUpProps) {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    console.log(value);
     setValues({
       ...values,
       [name]: value,
@@ -46,11 +45,47 @@ export default function SignUp(props: SignUpProps) {
   };
 
   const handleInputCheck = (e: FocusEvent<HTMLInputElement>) => {
-  // console.log(e.target.name);
-  // const { name} = e.target
-   type ObjectKey = UserObject[keyof UserObject]
-   const targetKey: ObjectKey = e.target.name
-  console.log(values[`${targetKey}` as keyof UserObject]);
+    type ObjectKey = UserObject[keyof UserObject];
+    const targetKey: ObjectKey = e.target.name;
+
+    if (values[`${targetKey}` as keyof UserObject] === "") {
+      setErrors({
+        ...errors,
+        [targetKey]: true,
+      });
+    } else if (targetKey === "password") {
+      const regex = new RegExp(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/g
+      );
+      if (!regex.test(e.target.value)) {
+        setErrors({
+          ...errors,
+          [targetKey]: true,
+        });
+      } else {
+        setErrors({
+          ...errors,
+          [targetKey]: false,
+        });
+      }
+    } else if (targetKey === "passwordVerify") {
+      if (values.passwordVerify !== values.password) {
+        setErrors({
+          ...errors,
+          [targetKey]: true,
+        });
+      } else {
+        setErrors({
+          ...errors,
+          [targetKey]: false,
+        });
+      }
+    } else {
+      setErrors({
+        ...errors,
+        [targetKey]: false,
+      });
+    }
   };
 
   return (
@@ -58,7 +93,6 @@ export default function SignUp(props: SignUpProps) {
       <form
         className="grid col-start-4 col-end-10 bg-green-500 drop-shadow-lg text-xl text-left p-5 rounded-lg min-h-fit"
         onSubmit={handleSubmit}
-        // onBlur={handleErrorChecks}
       >
         <h2 className="text-4xl text-center">Create Account</h2>
         <fieldset className="pb-5">
@@ -92,8 +126,12 @@ export default function SignUp(props: SignUpProps) {
               required
             />
           </label>
-          {errors.password ? <small>Password field is required</small> : null}
-          {formatErrors ? <small>Password needs fixing.</small> : null}
+          {errors.password && !values.password ? (
+            <small>Password field is required</small>
+          ) : null}
+          {errors.password && values.password ? (
+            <small>Password needs fixing.</small>
+          ) : null}
         </fieldset>
         <fieldset className="pb-5">
           <label>
@@ -116,10 +154,16 @@ export default function SignUp(props: SignUpProps) {
         </fieldset>
         <button
           className={`rounded-full ${
-            disabled ? "bg-orange-200" : "bg-orange-500"
+            Object.values(values).includes("") ||
+            Object.values(errors).includes(true)
+              ? "bg-orange-200"
+              : "bg-orange-500"
           }`}
           type="submit"
-          disabled={disabled}
+          disabled={
+            Object.values(values).includes("") ||
+            Object.values(errors).includes(true)
+          }
         >
           Submit
         </button>
