@@ -1,13 +1,13 @@
 import { useState, ChangeEvent, FormEvent, FocusEvent } from "react";
 import "../App.css";
 
-type UserObject = {
+interface UserObject {
   email: string;
   password: string;
   passwordVerify: string;
-};
+}
 
-const userValues: UserObject = {
+const initialValues: UserObject = {
   email: "",
   password: "",
   passwordVerify: "",
@@ -18,18 +18,18 @@ type SignUpProps = {
 };
 
 export default function SignUp(props: SignUpProps) {
-  const [values, setValues] = useState(userValues);
+  const [values, setValues] = useState(initialValues);
   const [disabled, setDisabled] = useState(true);
+  const [formatErrors, setFormatErrors] = useState(false);
   const [errors, setErrors] = useState({
     email: false,
     password: false,
     passwordVerify: false,
   });
-  const [regExCheck, setregExCheck] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    console.log(name);
+    console.log(value);
     setValues({
       ...values,
       [name]: value,
@@ -45,32 +45,12 @@ export default function SignUp(props: SignUpProps) {
     });
   };
 
-  const handlePasswordCheck = (e: FocusEvent<HTMLInputElement>) => {
-    if (values.password !== values.passwordVerify) {
-      setErrors({ ...errors, [e.target.name]: true });
-      setDisabled(true);
-    }
-  };
-
   const handleInputCheck = (e: FocusEvent<HTMLInputElement>) => {
-    console.log(e);
-    if (e.target.value === "") {
-      setErrors({ ...errors, [e.target.name]: true });
-      setDisabled(true);
-    } else {
-      setErrors({ ...errors, [e.target.name]: false });
-    }
-
-    if (e.target.name === "password" && e.target.value !== "") {
-      let regExp = new RegExp(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/g
-      );
-      if (regExp.test(e.target.value)) {
-        setregExCheck(false);
-      } else {
-        setregExCheck(true);
-      }
-    }
+  // console.log(e.target.name);
+  // const { name} = e.target
+   type ObjectKey = UserObject[keyof UserObject]
+   const targetKey: ObjectKey = e.target.name
+  console.log(values[`${targetKey}` as keyof UserObject]);
   };
 
   return (
@@ -78,6 +58,7 @@ export default function SignUp(props: SignUpProps) {
       <form
         className="grid col-start-4 col-end-10 bg-green-500 drop-shadow-lg text-xl text-left p-5 rounded-lg min-h-fit"
         onSubmit={handleSubmit}
+        // onBlur={handleErrorChecks}
       >
         <h2 className="text-4xl text-center">Create Account</h2>
         <fieldset className="pb-5">
@@ -112,7 +93,7 @@ export default function SignUp(props: SignUpProps) {
             />
           </label>
           {errors.password ? <small>Password field is required</small> : null}
-          {regExCheck ? <small>Password needs fixing.</small> : null}
+          {formatErrors ? <small>Password needs fixing.</small> : null}
         </fieldset>
         <fieldset className="pb-5">
           <label>
@@ -125,14 +106,18 @@ export default function SignUp(props: SignUpProps) {
               placeholder="Re-type Password"
               value={values.passwordVerify}
               onChange={handleChange}
-              onBlur={handlePasswordCheck}
+              onBlur={handleInputCheck}
               required
             />
           </label>
-          {/* { errors ? <small>Email field is required</small>: null} */}
+          {errors.passwordVerify ? (
+            <small>Passwords do not match. Please fix.</small>
+          ) : null}
         </fieldset>
         <button
-          className="rounded-full bg-orange-500"
+          className={`rounded-full ${
+            disabled ? "bg-orange-200" : "bg-orange-500"
+          }`}
           type="submit"
           disabled={disabled}
         >
