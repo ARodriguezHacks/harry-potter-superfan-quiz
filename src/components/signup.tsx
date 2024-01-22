@@ -19,8 +19,6 @@ type SignUpProps = {
 
 export default function SignUp(props: SignUpProps) {
   const [values, setValues] = useState(initialValues);
-  // const [disabled, setDisabled] = useState(true);
-  // const [formatErrors, setFormatErrors] = useState(false);
   const [errors, setErrors] = useState({
     email: false,
     password: false,
@@ -35,13 +33,22 @@ export default function SignUp(props: SignUpProps) {
     });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit =  async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setValues({
-      email: "",
-      password: "",
-      passwordVerify: "",
+    console.log(JSON.stringify(values))
+    const response = await fetch("http://127.0.0.1:5000/signup", {
+      method: "POST",
+      mode: "cors",
+      body: JSON.stringify(values),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      }
     });
+
+    const output = await response.json();
+    console.log(output)
+    setValues(initialValues)
+    return output;
   };
 
   const handleInputCheck = (e: FocusEvent<HTMLInputElement>) => {
