@@ -36,13 +36,18 @@ export default function SignUp(props: SignUpProps) {
     });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setValues({
-      email: "",
-      password: "",
-      passwordVerify: "",
+    const response = await fetch("http://127.0.0.1:5000/signup", {
+      method: "POST",
+      mode: "cors",
+      body: JSON.stringify({email: values.email, password: values.password}),
     });
+
+    const output = await response.json();
+    console.log(output)
+    setValues(userValues)
+    return output;
   };
 
   const handlePasswordCheck = (e: FocusEvent<HTMLInputElement>) => {
@@ -62,7 +67,7 @@ export default function SignUp(props: SignUpProps) {
     }
 
     if (e.target.name === "password" && e.target.value !== "") {
-      let regExp = new RegExp(
+      const regExp = new RegExp(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/g
       );
       if (regExp.test(e.target.value)) {
