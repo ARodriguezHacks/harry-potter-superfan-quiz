@@ -5,6 +5,7 @@ import Homepage from "./pages/homepage.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import QuizLevel from "./pages/quizLevel.tsx";
+import Dashboard from "./pages/dashboard.tsx";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/quizLevel",
     element: <QuizLevel />,
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
   },
 ]);
 

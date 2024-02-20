@@ -28,13 +28,13 @@ export default function Login(props: LoginProps) {
     const response = await fetch("http://127.0.0.1:5000/login", {
       method: "POST",
       mode: "cors",
-      body: JSON.stringify(values),
+      body: JSON.stringify({ email: values.email, password: values.password }),
     });
 
     const output = await response.json();
-    setValues(defaultValues)
-    // console.log(output);
-    return output;
+    console.log(output);
+    // localStorage.setItem('jwt', JSON.stringify(session))
+    setValues(defaultValues);
   };
 
   return (
